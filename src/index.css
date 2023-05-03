@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { font-family: "Noto Sans"; }
+
+* { -webkit-font-smoothing: antialiased; }
+
+@layer base {
+  html, body {
+    background-color: #F0EDEC;
+    font-family: Noto Sans, system-ui, sans-serif;
+  }
+}
