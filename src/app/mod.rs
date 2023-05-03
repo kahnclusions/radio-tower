@@ -24,7 +24,10 @@ pub fn root(cx: Scope) -> Element {
                 "radio-tower"
             }
             div {
-                "Hello, world!"
+                "Hello, world!",
+                img {
+                    src: "{response.message}"
+                }
             }
         },
             Some(Err(e)) => {
