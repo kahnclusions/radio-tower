@@ -20,8 +20,8 @@ struct ApiResponse {
 }
 
 pub fn root(cx: Scope) -> Element {
-    let stats = use_state::<Option<SessionStats>>(cx, || None);
     let torrents = use_state::<Vec<TorrentSummary>>(cx, || Vec::new());
+    let stats = use_state::<Option<SessionStats>>(cx, || None);
     let _ws: &Coroutine<()> = use_coroutine(cx, |_rx| {
         let stats = stats.to_owned();
         let transmission = crate::transmission::client::ClientBuilder::new()
@@ -56,9 +56,9 @@ pub fn root(cx: Scope) -> Element {
         header {
             class: "sticky top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
             "radio-tower"
-        },
+        }
         div {
-            class: "flex flex-col gap-2",
+            class: "flex flex-col gap-1 m-1",
             torrents.iter().map(|torrent| cx.render(rsx!(
                 MiniTorrent {
                     torrent: &torrent
@@ -67,7 +67,7 @@ pub fn root(cx: Scope) -> Element {
         },
         footer {
             class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
-            StatsBar { stats: stats }
+            StatsBar {}
         }
     ))
 }

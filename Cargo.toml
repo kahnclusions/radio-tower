@@ -10,6 +10,7 @@ axum = "0.6.18"
 color-eyre = "0.6.2"
 dioxus = "0.3.2"
 dioxus-free-icons = { version = "0.6.0", features = ["ionicons", "feather"] }
+dioxus-interpreter-js = "0.3.1"
 dioxus-liveview = { version = "0.3.0", features = ["axum"] }
 eyre = "0.6.8"
 http = "0.2.9"

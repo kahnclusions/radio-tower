@@ -1,19 +1,33 @@
 #![allow(non_snake_case)]
 
+use std::time::Duration;
+
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::io_icons::{IoArrowDown, IoArrowUp};
 use dioxus_free_icons::Icon;
 use human_bytes::human_bytes;
+use tokio::time::sleep;
 
 use crate::transmission::client::SessionStats;
 
-#[derive(Props)]
-pub struct StatsBarProps<'a> {
-    stats: &'a Option<SessionStats>,
-}
+pub fn StatsBar(cx: Scope) -> Element {
+    let stats = use_state::<Option<SessionStats>>(cx, || None);
+    let _ws: &Coroutine<()> = use_coroutine(cx, |_rx| {
+        let stats = stats.to_owned();
+        let transmission = crate::transmission::client::ClientBuilder::new()
+            .transmission_url("http://localhost:9091/transmission/rpc".to_string())
+            .build()
+            .unwrap();
+        async move {
+            loop {
+                let response = transmission.session_stats().await.unwrap();
+                stats.set(Some(response.arguments));
+                sleep(Duration::from_secs(1)).await;
+            }
+        }
+    });
 
-pub fn StatsBar<'a>(cx: Scope<'a, StatsBarProps<'a>>) -> Element {
-    match cx.props.stats {
+    match stats.as_ref() {
         None => cx.render(rsx! {
             div {
                 "Loading..."

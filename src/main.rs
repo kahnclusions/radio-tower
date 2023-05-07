@@ -1,5 +1,10 @@
+use std::net::SocketAddr;
+
+use axum::extract::connect_info::ConnectInfo;
+use axum::extract::ws::WebSocket;
 use axum::routing::get;
 use axum::{extract::WebSocketUpgrade, response::Html, Router};
+use dioxus_interpreter_js::INTERPRETER_JS;
 use rust_embed::RustEmbed;
 use transmission::client::{GetSessionRequest, GetSessionResponse, Request, Response};
 
@@ -10,9 +15,24 @@ pub mod transmission;
 #[folder = "static/"]
 struct Asset;
 
+static MAIN_JS: &str = include_str!("./main.js");
+
+pub fn interpreter_glue(url: &str) -> String {
+    format!(
+        r#"
+<script>
+    var WS_ADDR = "{url}";
+    {INTERPRETER_JS}
+    {MAIN_JS}
+    main();
+</script>
+    "#
+    )
+}
+
 #[tokio::main]
 async fn main() {
-    let addr: std::net::SocketAddr = ([127, 0, 0, 1], 3030).into();
+    let addr: std::net::SocketAddr = ([10, 0, 0, 171], 3030).into();
 
     let view = dioxus_liveview::LiveViewPool::new();
     let tailwind_css = Asset::get("tailwind.css").unwrap();
@@ -40,7 +60,7 @@ async fn main() {
                 </html>
                 "#,
                     // Create the glue code to connect to the WebSocket on the "/ws" route
-                    glue = dioxus_liveview::interpreter_glue(&format!("ws://{addr}/ws")),
+                    glue = interpreter_glue(&format!("ws://{addr}/ws")),
                     style = std::str::from_utf8(tailwind_css.data.as_ref()).unwrap()
                 ))
             }),
@@ -48,20 +68,23 @@ async fn main() {
         // The WebSocket route is what Dioxus uses to communicate with the browser
         .route(
             "/ws",
-            get(move |ws: WebSocketUpgrade| async move {
-                ws.on_upgrade(move |socket| async move {
-                    // When the WebSocket is upgraded, launch the LiveView with the app component
-                    _ = view
-                        .launch(dioxus_liveview::axum_socket(socket), app::root)
-                        .await;
-                })
-            }),
+            get(
+                move |ws: WebSocketUpgrade, ConnectInfo(addr): ConnectInfo<SocketAddr>| async move {
+                    ws.on_upgrade(move |socket| async move {
+                        println!("WebSocket [{:#?}]: Accepted connection", addr);
+                        _ = view
+                            .launch(dioxus_liveview::axum_socket(socket), app::root)
+                            .await;
+                        println!("WebSocket [{:#?}]: Connection dropped", addr);
+                    })
+                },
+            ),
         );
 
     println!("Listening on http://{addr}");
 
     axum::Server::bind(&addr.to_string().parse().unwrap())
-        .serve(router.into_make_service())
+        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await
         .unwrap();
 }

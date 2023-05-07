@@ -21,7 +21,7 @@ pub fn MiniTorrent<'a>(cx: Scope<'a, MiniTorrentProps<'a>>) -> Element {
     let summary = format!("{} of {} ({})", size_completed, size_when_done, progress);
     cx.render(rsx! {
         div {
-            class: "py-2 px-3 bg-beige-900",
+            class: "py-2 px-3 border-[2px] border-solid border-beige-800 dark:border-grey-200",
             div {
                 class: "font-bold",
                 "{name}"
