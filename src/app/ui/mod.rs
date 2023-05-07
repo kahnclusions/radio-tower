@@ -1,3 +1,7 @@
+#![allow(non_snake_case)]
+
+pub mod progress_bar;
+
 use dioxus::prelude::*;
 
 #[derive(Props)]

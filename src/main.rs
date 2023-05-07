@@ -1,8 +1,10 @@
 use axum::routing::get;
 use axum::{extract::WebSocketUpgrade, response::Html, Router};
 use rust_embed::RustEmbed;
+use transmission::client::{GetSessionRequest, GetSessionResponse, Request, Response};
 
 pub mod app;
+pub mod transmission;
 
 #[derive(RustEmbed)]
 #[folder = "static/"]
@@ -14,8 +16,7 @@ async fn main() {
 
     let view = dioxus_liveview::LiveViewPool::new();
     let tailwind_css = Asset::get("tailwind.css").unwrap();
-
-    let app = Router::new()
+    let router = Router::new()
         // The root route contains the glue code to connect to the WebSocket
         .route(
             "/",
@@ -23,9 +24,10 @@ async fn main() {
                 Html(format!(
                     r#"
                 <!DOCTYPE html>
-                <html>
+                <html class="bg-white dark:bg-black">
                 <head> 
                   <title>Dioxus LiveView with Axum</title>  
+                  <meta name="viewport" content="width=device-width, initial-scale=1" />
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Silkscreen">
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans">
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Serif">
@@ -33,7 +35,7 @@ async fn main() {
                   {style}
                   </style>
                 </head>
-                <body> <div id="main"></div> </body>
+                <body class="bg-white dark:bg-black dark:text-white"> <div id="main"></div> </body>
                 {glue}
                 </html>
                 "#,
@@ -59,7 +61,7 @@ async fn main() {
     println!("Listening on http://{addr}");
 
     axum::Server::bind(&addr.to_string().parse().unwrap())
-        .serve(app.into_make_service())
+        .serve(router.into_make_service())
         .await
         .unwrap();
 }
