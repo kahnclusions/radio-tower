@@ -18,8 +18,9 @@ class IPC {
     window.interpreter = new Interpreter(root);
     this.reconnecting = false;
 
-    function ping() {
-      ws.send("__ping__");
+    const overlayId = "rt-connection-status"
+    const ping = () => {
+      this.ws.send("__ping__");
     }
 
     const connect = () => {
@@ -30,6 +31,10 @@ class IPC {
     }
 
     const onopen = () => {
+      const overlay = document.getElementById(overlayId)
+      if (overlay) {
+        document.getElementsByTagName("body")[0].removeChild(overlay)
+      }
       if (this.reconnecting) {
         // Without the following, the app will be displayed twice:
         root.innerHTML = '';
@@ -40,11 +45,32 @@ class IPC {
       }
       // we ping every 30 seconds to keep the websocket alive
       setInterval(ping, 30000);
-      ws.send(serializeIpcMessage("initialize"));
+      this.ws.send(serializeIpcMessage("initialize"));
     };
+
+    const showOverlay = () => {
+      let overlay = document.getElementById(overlayId)
+      if (!overlay) {
+        overlay = document.createElement("div")
+        overlay.setAttribute("id", overlayId)
+        overlay.setAttribute("style", "position: fixed; top: 0; right: 0; left: 0; bottom: 0; background-color: #000000aa; display: flex; justify-content: center; align-items: center;")
+
+        const overlayContent = document.createElement("div")
+        overlayContent.setAttribute("id", "rt-connection-status-content")
+        overlayContent.setAttribute("style", "color: white; font-size: 1.2rem; font-family: Silkscreen; margin: 3rem; font-weight: 500;")
+        overlayContent.innerHTML = "<p style=\"margin-bottom: 1.5rem;\">Connection lost.</p><p>Please check your connection, and reload this tab if it doesn't come back online automatically.</p>"
+
+        overlay.appendChild(overlayContent)
+        this.overlay = overlay
+
+        const body = document.getElementsByTagName("body")[0]
+        body.appendChild(overlay)
+      }
+    }
 
     const onclose = (event) => {
       console.log("Closed")
+      showOverlay()
       if (this.keepWsAliveIntervalId) {
         // Clear interval, so we don't ping the server again until we are reconnected:
         clearInterval(this.keepWsAliveIntervalId);
