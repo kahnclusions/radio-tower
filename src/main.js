@@ -24,7 +24,7 @@ class IPC {
     }
 
     const connect = () => {
-      this.ws = new WebSocket(WS_ADDR);
+      this.ws = new WebSocket(`${WS_ADDR}?initial_route=${window.location.pathname}`);
       this.ws.onopen = onopen;
       this.ws.onmessage = onmessage;
       this.ws.onclose = onclose;

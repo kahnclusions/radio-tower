@@ -22,7 +22,7 @@ pub fn StatsBar(cx: Scope) -> Element {
             loop {
                 let response = transmission.session_stats().await.unwrap();
                 stats.set(Some(response.arguments));
-                sleep(Duration::from_secs(1)).await;
+                sleep(Duration::from_secs(2)).await;
             }
         }
     });

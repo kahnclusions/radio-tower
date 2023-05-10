@@ -55,6 +55,18 @@ pub struct GetTorrentRequest {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TorrentActionRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ids: Option<Vec<i64>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TorrentStartRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ids: Option<Vec<f64>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Torrent {
     pub id: Option<f64>,
@@ -88,7 +100,14 @@ pub struct TorrentSummary {
     pub percent_done: f64,
     pub status: TorrentStatus,
     pub size_when_done: f64,
+    pub piece_count: i64,
+    pub pieces: String,
     pub eta: f64,
+    pub peers_connected: i64,
+    pub peers_getting_from_us: i64,
+    pub peers_sending_to_us: i64,
+    pub rate_download: i64,
+    pub rate_upload: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -111,10 +130,18 @@ pub struct Response<T> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ResponseNoArgs {
+    pub result: String,
+    pub tag: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum RequestArgs {
     GetSessionArgs(GetSessionRequest),
     GetTorrentArgs(GetTorrentRequest),
+    TorrentStopArgs(TorrentActionRequest),
+    TorrentStartArgs(TorrentActionRequest),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -224,6 +251,13 @@ impl Client {
             "eta",
             "percentDone",
             "sizeWhenDone",
+            "pieces",
+            "pieceCount",
+            "peersConnected",
+            "peersGettingFromUs",
+            "peersSendingToUs",
+            "rateDownload",
+            "rateUpload",
         ];
         let request = Request {
             method: "torrent-get".to_string(),
@@ -235,6 +269,19 @@ impl Client {
         };
         let res = self.send(&request).await?;
         let response: Response<TorrentSummaryResponse> = serde_json::from_value(res)?;
+        Ok(response)
+    }
+
+    pub async fn torrent_action(&self, action: String, id: i64) -> Result<ResponseNoArgs> {
+        let request = Request {
+            method: format!("torrent-{}", action),
+            arguments: Some(RequestArgs::TorrentStopArgs(TorrentActionRequest {
+                ids: Some(vec![id]),
+            })),
+            tag: None,
+        };
+        let res = self.send(&request).await?;
+        let response: ResponseNoArgs = serde_json::from_value(res)?;
         Ok(response)
     }
 }

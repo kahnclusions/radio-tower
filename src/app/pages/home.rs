@@ -1,18 +1,12 @@
 use std::time::Duration;
 
 use dioxus::prelude::*;
-use dioxus_router::{Route, Router};
 use serde::{Deserialize, Serialize};
 use tokio::time::sleep;
 
+use crate::app::mini_torrent::MiniTorrent;
+use crate::app::stats_bar::StatsBar;
 use crate::transmission::client::TorrentSummary;
-use pages::Home;
-use pages::Torrent;
-
-pub mod mini_torrent;
-pub mod pages;
-pub mod stats_bar;
-pub mod ui;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ApiResponse {
@@ -20,11 +14,7 @@ struct ApiResponse {
     status: String,
 }
 
-pub struct RootProps {
-    pub initial_route: String,
-}
-
-pub fn root(cx: Scope<RootProps>) -> Element {
+pub fn Home(cx: Scope) -> Element {
     let torrents = use_state::<Vec<TorrentSummary>>(cx, || Vec::new());
     let _torrents: &Coroutine<()> = use_coroutine(cx, |_rx| {
         let torrents = torrents.to_owned();
@@ -36,16 +26,27 @@ pub fn root(cx: Scope<RootProps>) -> Element {
             loop {
                 let response = transmission.torrent_summary().await.unwrap();
                 torrents.set(response.arguments.torrents);
-                sleep(Duration::from_secs(2)).await;
+                sleep(Duration::from_secs(1)).await;
             }
         }
     });
 
     cx.render(rsx!(
-        Router {
-            initial_url: format!("http://10.0.0.171:3030{}", cx.props.initial_route.clone()),
-            Route { to: "/", Home {} },
-            Route { to: "/torrent", Torrent {} }
+        header {
+            class: "fixed top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
+            "radio-tower"
+        }
+        main {
+            class: "flex flex-col gap-1 m-1 mt-[44px] mb-[44px]",
+            torrents.iter().map(|torrent| cx.render(rsx!(
+                MiniTorrent {
+                    torrent: &torrent
+                }
+            )))
+        }
+        footer {
+            class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
+            StatsBar {}
         }
     ))
 }

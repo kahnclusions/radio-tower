@@ -6,12 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.6.18"
+axum = { version = "0.6.18", features = ["query"] }
+base64 = "0.21.0"
+chrono = "0.4.24"
 color-eyre = "0.6.2"
 dioxus = "0.3.2"
 dioxus-free-icons = { version = "0.6.0", features = ["ionicons", "feather"] }
 dioxus-interpreter-js = "0.3.1"
 dioxus-liveview = { version = "0.3.0", features = ["axum"] }
+dioxus-router = "0.3.0"
 eyre = "0.6.8"
 http = "0.2.9"
 human_bytes = "0.4.2"
