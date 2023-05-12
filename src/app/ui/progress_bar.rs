@@ -135,7 +135,7 @@ pub(crate) fn ProgressBar<'a>(
 
     let pieces_color = build_progress_bar_pieces(colors, pieces, *piece_count);
 
-    cx.render(rsx!(
+    render! {
         div {
             class: "w-full h-3 overflow-hidden bg-beige-800 dark:bg-grey-200",
             div {
@@ -150,5 +150,5 @@ pub(crate) fn ProgressBar<'a>(
                     )})
             }
         }
-    ))
+    }
 }
