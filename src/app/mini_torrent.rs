@@ -1,19 +1,16 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::io_icons::{IoCaretDown, IoCaretUp};
+use dioxus_free_icons::Icon;
 use dioxus_router::Link;
 use human_bytes::human_bytes;
 
 use crate::app::ui::progress_bar::ProgressBar;
-use crate::transmission::client::{SessionStats, Torrent, TorrentStatus, TorrentSummary};
+use crate::transmission::client::{TorrentStatus, TorrentSummary};
 
-#[derive(Props)]
-pub struct MiniTorrentProps<'a> {
-    pub torrent: &'a TorrentSummary,
-}
-
-pub fn MiniTorrent<'a>(cx: Scope<'a, MiniTorrentProps<'a>>) -> Element {
-    let torrent = cx.props.torrent;
+#[inline_props]
+pub fn MiniTorrent<'a>(cx: Scope, torrent: &'a TorrentSummary) -> Element {
     let name = torrent.name.clone();
     let percent = torrent.percent_complete;
     let progress = format!("{:.2}%", 100.0 * percent);
@@ -25,7 +22,6 @@ pub fn MiniTorrent<'a>(cx: Scope<'a, MiniTorrentProps<'a>>) -> Element {
     // let eta = chrono::format::strftime();
 
     let summary = format!("{} of {} ({})", size_completed, size_when_done, progress);
-    let summary_2 = format!("DL: {}, UL: {}", rate_download, rate_upload);
 
     let pause_text = if matches!(torrent.status, TorrentStatus::Stopped) {
         "Resume".to_string()
@@ -52,7 +48,7 @@ pub fn MiniTorrent<'a>(cx: Scope<'a, MiniTorrentProps<'a>>) -> Element {
         }
     };
 
-    cx.render(rsx! {
+    render! {
         div {
             class: "border-[2px] border-solid border-beige-800 dark:border-grey-200",
             div {
@@ -75,37 +71,63 @@ pub fn MiniTorrent<'a>(cx: Scope<'a, MiniTorrentProps<'a>>) -> Element {
                         "{pause_text}"
                     }
                 }
-                div { "{summary_2}"},
-                div { "{summary}"},
+                div { "{summary}"}
             }
             ProgressBar {
-                percent: percent
                 status: &cx.props.torrent.status
-                pieces: cx.props.torrent.pieces.to_owned()
+                pieces: cx.props.torrent.pieces.as_str()
                 piece_count: cx.props.torrent.piece_count
-            },
+            }
+            div {
+                class: "flex flex-row bg-beige-800 dark:bg-grey-200",
+                DataPoint {
+                    icon: cx.render(rsx!(Icon { height: 16, width: 16, icon: IoCaretDown })),
+                    value: "{rate_download}/s"
+                }
+                DataPoint {
+                    icon: cx.render(rsx!(Icon { height: 16, width: 16, icon: IoCaretUp })),
+                    value: "{rate_upload}/s"
+                }
+                DataPoint {
+                    icon: cx.render(rsx!(Icon { height: 16, width: 16, icon: IoCaretUp })),
+                    value: "{size_completed} of {size_when_done}"
+                }
+            }
         }
-    })
+    }
 }
 
-#[derive(Props)]
-pub struct TorrentStatusProps<'a> {
-    pub status: &'a TorrentStatus,
+#[inline_props]
+pub fn DataPoint<'a>(cx: Scope, icon: Element<'a>, value: &'a str) -> Element {
+    render! {
+        div {
+            class: "flex flex-row h-5 text-sm items-center justify-left",
+            div {
+                class: "w-5 h-5 bg-beige-600 dark:bg-grey-400 flex items-center justify-center",
+                icon
+            }
+            div {
+                class: "h-5 flex flex-row items-center px-2",
+                "{value}"
+            }
+        }
+    }
 }
 
-pub fn TorrentStatusText<'a>(cx: Scope<'a, TorrentStatusProps<'a>>) -> Element {
-    let status_text = match cx.props.status {
-        TorrentStatus::Stopped => "Stopped".to_string(),
-        TorrentStatus::QueuedVerify => "Queued".to_string(),
-        TorrentStatus::QueuedDownload => "Queued".to_string(),
-        TorrentStatus::QueuedSeed => "Queued".to_string(),
-        TorrentStatus::Verifying => "Verifying".to_string(),
-        TorrentStatus::Downloading => "Downloading".to_string(),
-        TorrentStatus::Seeding => "Seeding".to_string(),
+#[inline_props]
+pub fn TorrentStatusText<'a>(cx: Scope, status: &'a TorrentStatus) -> Element {
+    let status_text = match status {
+        TorrentStatus::Stopped => "Stopped",
+        TorrentStatus::QueuedVerify => "Queued",
+        TorrentStatus::QueuedDownload => "Queued",
+        TorrentStatus::QueuedSeed => "Queued",
+        TorrentStatus::Verifying => "Verifying",
+        TorrentStatus::Downloading => "Downloading",
+        TorrentStatus::Seeding => "Seeding",
     };
-    cx.render(rsx!(
+    render! {
         span {
             "{status_text}"
         }
-    ))
+    }
 }

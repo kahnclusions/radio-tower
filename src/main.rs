@@ -2,14 +2,12 @@ use std::net::SocketAddr;
 
 use crate::app::RootProps;
 use axum::extract::connect_info::ConnectInfo;
-use axum::extract::ws::WebSocket;
 use axum::extract::Query;
 use axum::routing::get;
 use axum::{extract::WebSocketUpgrade, response::Html, Router};
 use dioxus_interpreter_js::INTERPRETER_JS;
 use rust_embed::RustEmbed;
 use serde::Deserialize;
-use transmission::client::{GetSessionRequest, GetSessionResponse, Request, Response};
 
 pub mod app;
 pub mod transmission;
@@ -83,7 +81,7 @@ async fn main() {
                             .launch_with_props(
                                 dioxus_liveview::axum_socket(socket),
                                 app::root,
-                                RootProps { initial_route },
+                                app::rootProps { initial_route },
                             )
                             .await;
                         println!("WebSocket [{:#?}]: Connection dropped", addr);

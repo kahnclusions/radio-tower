@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 use std::time::Duration;
 
 use dioxus::prelude::*;
@@ -26,7 +27,7 @@ pub fn Home(cx: Scope) -> Element {
             loop {
                 let response = transmission.torrent_summary().await.unwrap();
                 torrents.set(response.arguments.torrents);
-                sleep(Duration::from_secs(1)).await;
+                sleep(Duration::from_secs(2)).await;
             }
         }
     });
