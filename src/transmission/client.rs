@@ -151,12 +151,14 @@ pub enum ResponseArgs {
     GetTorrentRes(GetTorrentResponse),
 }
 
+#[derive(Debug)]
 pub struct Client {
     tm_url: String,
     session_id: Mutex<Arc<String>>,
 }
 
 impl Client {
+    #[tracing::instrument]
     pub async fn send(&self, request: &Request) -> color_eyre::Result<Value> {
         let mut headers = HeaderMap::new();
         {
@@ -206,6 +208,7 @@ impl Client {
         Ok(result)
     }
 
+    #[tracing::instrument]
     pub async fn session_get(&self, fields: Vec<String>) -> Result<Response<GetSessionResponse>> {
         let request = Request {
             method: "session-get".to_string(),
@@ -217,6 +220,7 @@ impl Client {
         Ok(response)
     }
 
+    #[tracing::instrument]
     pub async fn session_stats(&self) -> Result<Response<SessionStats>> {
         let request = Request {
             method: "session-stats".to_string(),
@@ -228,6 +232,7 @@ impl Client {
         Ok(response)
     }
 
+    #[tracing::instrument]
     pub async fn torrent_get(&self, fields: Vec<String>) -> Result<Response<GetTorrentResponse>> {
         let request = Request {
             method: "torrent-get".to_string(),
@@ -242,6 +247,7 @@ impl Client {
         Ok(response)
     }
 
+    #[tracing::instrument]
     pub async fn torrent_summary(&self) -> Result<Response<TorrentSummaryResponse>> {
         let fields = vec![
             "id",
@@ -272,6 +278,7 @@ impl Client {
         Ok(response)
     }
 
+    #[tracing::instrument]
     pub async fn torrent_action(&self, action: String, id: i64) -> Result<ResponseNoArgs> {
         let request = Request {
             method: format!("torrent-{}", action),
@@ -286,18 +293,22 @@ impl Client {
     }
 }
 
+#[derive(Debug)]
 pub struct ClientBuilder {
     tm_url: Option<String>,
 }
 
 impl ClientBuilder {
+    #[tracing::instrument]
     pub fn new() -> Self {
         Self { tm_url: None }
     }
+    #[tracing::instrument]
     pub fn transmission_url(mut self, tm_url: String) -> Self {
         self.tm_url = Some(tm_url);
         self
     }
+    #[tracing::instrument]
     pub fn build(self) -> Result<Client, Box<dyn Error>> {
         let tm_url = self.tm_url.expect("Expected a URL");
         Ok(Client {
