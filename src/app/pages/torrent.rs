@@ -17,20 +17,12 @@ struct ApiResponse {
 
 pub fn Torrent(cx: Scope) -> Element {
     cx.render(rsx!(
-        header {
-            class: "sticky top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
+        header { class: "sticky top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
             "radio-tower"
         }
-        div {
-            class: "flex flex-col gap-1 m-1",
-            "Hello, world!"
-        },
-        Link {
-            to: "/",
-            "Home"
-        }
-        footer {
-            class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
+        div { class: "flex flex-col gap-1 m-1", "Hello, world!" }
+        Link { to: "/", "Home" }
+        footer { class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
             StatsBar {}
         }
     ))

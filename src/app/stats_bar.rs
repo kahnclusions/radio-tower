@@ -28,11 +28,7 @@ pub fn StatsBar(cx: Scope) -> Element {
     });
 
     match stats.as_ref() {
-        None => cx.render(rsx! {
-            div {
-                "Loading..."
-            }
-        }),
+        None => cx.render(rsx! { div { "Loading..." } }),
         Some(stats) => {
             let dl_speed = human_bytes(stats.download_speed);
             let ul_speed = human_bytes(stats.upload_speed);
@@ -41,38 +37,30 @@ pub fn StatsBar(cx: Scope) -> Element {
             let ul_total = human_bytes(stats.cumulative_stats.uploaded_bytes);
 
             cx.render(rsx! {
-                div {
-                    class: "flex flex-row justify-between text-sm",
-                    div {
-                        class: "flex flex-col justify-between",
-                        div {
-                            class: "flex flex-row",
+                div { class: "flex flex-row justify-between text-sm",
+                    div { class: "flex flex-col justify-between",
+                        div { class: "flex flex-row",
                             Icon {
-                              class: "text-black dark:text-white fill-black dark:fill-white",
-                              width: 18,
-                              height: 18,
-                              icon: IoArrowDown
+                                class: "text-black dark:text-white fill-black dark:fill-white",
+                                width: 18,
+                                height: 18,
+                                icon: IoArrowDown
                             }
                             "{dl_speed}/s"
                         }
-                        div {
-                            class: "flex flex-row text-sm",
+                        div { class: "flex flex-row text-sm",
                             Icon {
-                              class: "text-black dark:text-white fill-black dark:fill-white",
-                              width: 18,
-                              height: 18,
-                              icon: IoArrowUp
+                                class: "text-black dark:text-white fill-black dark:fill-white",
+                                width: 18,
+                                height: 18,
+                                icon: IoArrowUp
                             }
                             "{ul_speed}/s"
                         }
                     }
                     div {
-                        div {
-                            "Downloaded: {dl_total}"
-                        }
-                        div {
-                            "Uploaded: {ul_total}"
-                        }
+                        div { "Downloaded: {dl_total}" }
+                        div { "Uploaded: {ul_total}" }
                     }
                 }
             })

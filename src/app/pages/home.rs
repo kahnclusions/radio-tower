@@ -33,20 +33,17 @@ pub fn Home(cx: Scope) -> Element {
     });
 
     cx.render(rsx!(
-        header {
-            class: "fixed top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
+        header { class: "fixed top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
             "radio-tower"
         }
-        main {
-            class: "flex flex-col gap-2 mt-[44px] mb-[44px] bg-beige-900 h-full",
+        main { class: "flex flex-col gap-2 mt-[44px] mb-[44px] bg-beige-900 h-full",
             torrents.iter().map(|torrent| cx.render(rsx!(
                 MiniTorrent {
                     torrent: &torrent
                 }
             )))
         }
-        footer {
-            class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
+        footer { class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
             StatsBar {}
         }
     ))

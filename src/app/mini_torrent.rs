@@ -55,35 +55,16 @@ pub fn MiniTorrent<'a>(cx: Scope, torrent: &'a TorrentSummary) -> Element {
     // let torrent_status = torrent_status_text(&cx.props.torrent.status);
 
     render! {
-        div {
-            class: "bg-white", // border-[2px] border-solid border-beige-800 dark:border-grey-200",
-            div {
-                class: "p-[4px]" ,
-                div {
-                    class: "font-bold flex flex-row flex-wrap items-center gap-2",
-                    "{name}"
-                },
-                // div {
-                //     class: "flex flex-row gap-3 justify-left",
-                //     Link {
-                //         to: "/torrent",
-                //         "View"
-                //     }
-                //     button {
-                //         onclick: pause_or_resume,
-                //         "{pause_text}"
-                //     }
-                // }
-            }
+        div { class: "bg-white",
+            div { class: "p-[4px]", div { class: "font-bold flex flex-row flex-wrap items-center gap-2", "{name}" } }
             ProgressBar {
-                status: &cx.props.torrent.status
-                pieces: cx.props.torrent.pieces.as_str()
+                status: &cx.props.torrent.status,
+                pieces: cx.props.torrent.pieces.as_str(),
                 piece_count: cx.props.torrent.piece_count
             }
-            div {
-                class: "flex flex-row flex-wrap p-1",
+            div { class: "flex flex-row flex-wrap p-1",
                 DataPoint {
-                    icon: cx.render(rsx!(TorrentStatusIcon { status: &torrent.status })),
+                    icon: cx.render(rsx!(TorrentStatusIcon { status : & torrent.status })),
                     value: torrent_status_text(&torrent.status)
                 }
                 if let TorrentStatus::Seeding = torrent.status { None } else {
@@ -92,11 +73,11 @@ pub fn MiniTorrent<'a>(cx: Scope, torrent: &'a TorrentSummary) -> Element {
                     value: "{rate_download}/s"
                 }}}
                 DataPoint {
-                    icon: cx.render(rsx!(Icon { height: 16, width: 16, icon: IoCloudUploadOutline })),
+                    icon: cx.render(rsx!(Icon { height : 16, width : 16, icon : IoCloudUploadOutline })),
                     value: "{rate_upload}/s"
                 }
                 DataPoint {
-                    icon: cx.render(rsx!(Icon { height: 16, width: 16, icon: IoServerOutline })),
+                    icon: cx.render(rsx!(Icon { height : 16, width : 16, icon : IoServerOutline })),
                     value: "{size_completed} of {size_when_done}"
                 }
                 cx.render(match torrent.status {

@@ -22,9 +22,8 @@ pub struct RootProps {
 #[inline_props]
 pub fn root(cx: Scope, initial_route: String) -> Element {
     render! {
-        Router {
-            initial_url: format!("http://10.0.0.171:3030{}", *initial_route),
-            Route { to: "/", Home {} },
+        Router { initial_url: format!("http://10.0.0.171:3030{}", * initial_route),
+            Route { to: "/", Home {} }
             Route { to: "/torrent", Torrent {} }
         }
     }

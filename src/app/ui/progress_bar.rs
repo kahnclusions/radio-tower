@@ -167,10 +167,8 @@ pub(crate) fn ProgressBar<'a>(
     let pieces_color = build_progress_bar_pieces(colors, pieces, *piece_count);
 
     render! {
-        div {
-            class: "w-full h-3 overflow-hidden bg-beige-800 dark:bg-grey-200",
-            div {
-                class: "h-full w-full flex flex-row",
+        div { class: "w-full h-1 overflow-hidden bg-beige-800 dark:bg-grey-200",
+            div { class: "h-full w-full flex flex-row",
                 pieces_color.into_iter().map(|piece| {
                     rsx!(
                         span {
