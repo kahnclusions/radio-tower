@@ -2,12 +2,9 @@
 
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::io_icons::{
-    IoCaretDown, IoCaretUp, IoCloudDownload, IoCloudDownloadOutline, IoCloudUpload,
-    IoCloudUploadOutline, IoCube, IoGitNetworkOutline, IoPauseCircle, IoPlayCircle,
-    IoServerOutline, IoStop, IoStopOutline,
+    IoCloudDownloadOutline, IoCloudUploadOutline, IoGitNetworkOutline, IoServerOutline,
 };
 use dioxus_free_icons::Icon;
-use dioxus_router::Link;
 use human_bytes::human_bytes;
 
 use crate::app::ui::{DataPoint, ProgressBar, TorrentStatusIcon};

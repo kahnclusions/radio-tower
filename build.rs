@@ -1,6 +1,12 @@
+use std::env;
+use std::path::Path;
+
 fn main() {
     let toolchain = install_packages();
+    let out_dir = env::var("OUT_DIR").unwrap();
+    println!("Building with {:#?}", out_dir);
 
+    let tailwind_file = out_dir + "/tailwind.css";
     std::process::Command::new(toolchain)
         .args([
             "tailwind",
@@ -9,7 +15,7 @@ fn main() {
             "-c",
             "tailwind.config.js",
             "-o",
-            "static/tailwind.css",
+            tailwind_file.as_str(),
             "--minify",
         ])
         .env("NODE_ENV", "production")

@@ -1,22 +1,17 @@
 use std::net::SocketAddr;
 
-use crate::app::RootProps;
 use axum::extract::connect_info::ConnectInfo;
 use axum::extract::Query;
 use axum::routing::get;
 use axum::{extract::WebSocketUpgrade, response::Html, Router};
 use dioxus_interpreter_js::INTERPRETER_JS;
-use rust_embed::RustEmbed;
 use serde::Deserialize;
 
 pub mod app;
 pub mod transmission;
 
-#[derive(RustEmbed)]
-#[folder = "static/"]
-struct Asset;
-
-static MAIN_JS: &str = include_str!("./main.js");
+static TAILWIND_CSS: &'static str = include_str!(concat!(env!("OUT_DIR"), "/tailwind.css"));
+static MAIN_JS: &'static str = include_str!("./main.js");
 
 pub fn interpreter_glue(url: &str) -> String {
     format!(
@@ -41,7 +36,7 @@ async fn main() {
     let addr: std::net::SocketAddr = ([10, 0, 0, 171], 3030).into();
 
     let view = dioxus_liveview::LiveViewPool::new();
-    let tailwind_css = Asset::get("tailwind.css").unwrap();
+    // let tailwind_css = Asset::get("tailwind.css").unwrap();
     let html = format!(
         r#"
                 <!DOCTYPE html>
@@ -62,7 +57,7 @@ async fn main() {
                 "#,
         // Create the glue code to connect to the WebSocket on the "/ws" route
         glue = interpreter_glue(&format!("ws://{addr}/ws")),
-        style = std::str::from_utf8(tailwind_css.data.as_ref()).unwrap()
+        style = TAILWIND_CSS
     );
     let html_root = html.clone();
     let html_path = html.clone();
