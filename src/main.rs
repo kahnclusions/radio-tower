@@ -7,8 +7,6 @@ use axum::{extract::WebSocketUpgrade, response::Html, Router};
 use clap::Parser;
 use color_eyre::Report;
 use dioxus_interpreter_js::INTERPRETER_JS;
-use opentelemetry::global;
-use opentelemetry::trace::Tracer;
 use serde::Deserialize;
 use tracing::{debug, info};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
@@ -92,7 +90,7 @@ async fn main() -> Result<(), Report> {
                 <!DOCTYPE html>
                 <html class="bg-beige-800 dark:bg-black h-full">
                 <head> 
-                  <title>Dioxus LiveView with Axum</title>  
+                  <title>radio-tower</title>  
                   <meta name="viewport" content="width=device-width, initial-scale=1" />
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Silkscreen">
                   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans">
