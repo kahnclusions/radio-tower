@@ -1,8 +1,14 @@
 #![allow(non_snake_case)]
 
+pub mod data_point;
 pub mod progress_bar;
+pub mod torrent_status_icon;
 
 use dioxus::prelude::*;
+
+pub(crate) use data_point::DataPoint;
+pub(crate) use progress_bar::ProgressBar;
+pub(crate) use torrent_status_icon::TorrentStatusIcon;
 
 #[derive(Props)]
 pub(crate) struct StackProps<'a> {

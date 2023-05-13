@@ -1,7 +1,6 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::fi_icons::{FiCheck, FiDownload, FiList, FiOctagonFill, FiUpload};
 use dioxus_free_icons::icons::io_icons::{
     IoCaretDown, IoCaretUp, IoCloudDownload, IoCloudDownloadOutline, IoCloudUpload,
     IoCloudUploadOutline, IoCube, IoGitNetworkOutline, IoPauseCircle, IoPlayCircle,
@@ -11,7 +10,7 @@ use dioxus_free_icons::Icon;
 use dioxus_router::Link;
 use human_bytes::human_bytes;
 
-use crate::app::ui::progress_bar::ProgressBar;
+use crate::app::ui::{DataPoint, ProgressBar, TorrentStatusIcon};
 use crate::transmission::client::{TorrentStatus, TorrentSummary};
 
 #[inline_props]
@@ -118,23 +117,6 @@ pub fn MiniTorrent<'a>(cx: Scope, torrent: &'a TorrentSummary) -> Element {
     }
 }
 
-#[inline_props]
-pub fn DataPoint<'a>(cx: Scope, icon: Element<'a>, value: &'a str) -> Element {
-    render! {
-        div {
-            class: "flex flex-row h-5 text-sm items-center justify-left",
-            div {
-                class: "w-5 h-5 flex items-center justify-center",
-                icon
-            }
-            div {
-                class: "h-5 flex flex-row items-center pl-1 pr-2",
-                "{value}"
-            }
-        }
-    }
-}
-
 fn torrent_status_text(status: &TorrentStatus) -> &str {
     match status {
         TorrentStatus::Stopped => "Stopped",
@@ -144,46 +126,5 @@ fn torrent_status_text(status: &TorrentStatus) -> &str {
         TorrentStatus::Verifying => "Verifying",
         TorrentStatus::Downloading => "Downloading",
         TorrentStatus::Seeding => "Seeding",
-    }
-}
-
-#[inline_props]
-pub fn TorrentStatusIcon<'a>(cx: Scope, status: &'a TorrentStatus) -> Element {
-    match status {
-        TorrentStatus::Stopped => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiOctagonFill
-        }),
-        TorrentStatus::QueuedVerify => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiList
-        }),
-        TorrentStatus::QueuedDownload => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiList
-        }),
-        TorrentStatus::QueuedSeed => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiList
-        }),
-        TorrentStatus::Verifying => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiCheck
-        }),
-        TorrentStatus::Downloading => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiDownload
-        }),
-        TorrentStatus::Seeding => render!(Icon {
-            height: 16,
-            width: 16,
-            icon: FiUpload
-        }),
     }
 }
