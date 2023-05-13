@@ -45,7 +45,7 @@ async fn main() {
     let html = format!(
         r#"
                 <!DOCTYPE html>
-                <html class="bg-white dark:bg-black">
+                <html class="bg-beige-800 dark:bg-black h-full">
                 <head> 
                   <title>Dioxus LiveView with Axum</title>  
                   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,7 +56,7 @@ async fn main() {
                   {style}
                   </style>
                 </head>
-                <body class="bg-white dark:bg-black dark:text-white"> <div id="main"></div> </body>
+                <body class="bg-beige-800 dark:bg-black dark:text-white h-full"> <div id="main" class="h-full"></div> </body>
                 {glue}
                 </html>
                 "#,

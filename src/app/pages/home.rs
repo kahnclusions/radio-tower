@@ -38,7 +38,7 @@ pub fn Home(cx: Scope) -> Element {
             "radio-tower"
         }
         main {
-            class: "flex flex-col gap-1 m-1 mt-[44px] mb-[44px]",
+            class: "flex flex-col gap-2 mt-[44px] mb-[44px] bg-beige-900 h-full",
             torrents.iter().map(|torrent| cx.render(rsx!(
                 MiniTorrent {
                     torrent: &torrent

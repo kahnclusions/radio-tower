@@ -11,11 +11,16 @@ struct Colors<'a> {
     started: &'a str,
 }
 
+struct TempChunk {
+    color: String,
+    width: usize,
+}
+
 fn build_progress_bar_pieces<'a>(
     colors: Colors<'a>,
     pieces: &'a str,
     piece_count: i64,
-) -> Vec<&'a str> {
+) -> Vec<TempChunk> {
     let pieces: Vec<u8> = general_purpose::STANDARD.decode(pieces).unwrap();
 
     // First we convert into bytes. 14599 / 8 = 1824.875
@@ -82,22 +87,48 @@ fn build_progress_bar_pieces<'a>(
     const NUM_CHUNKS: f64 = 100.0;
     let chunk_size = (chunks.len() as f64 / NUM_CHUNKS).ceil() as usize;
     let chunks_vec = chunks.into_iter().collect::<Vec<_>>();
-    let piece_colors: Vec<_> = chunks_vec
-        .chunks(chunk_size)
-        .map(|chunk| {
-            let total = chunk.len() as u32 * 4;
-            let sum: u32 = chunk.iter().map(|v| *v as u32).sum();
-            if sum >= total {
-                colors.complete
-            } else if sum > total / 2 {
-                colors.incomplete
-            } else if sum > 0 {
-                colors.started
-            } else {
-                "bg-grey-800"
-            }
-        })
-        .collect();
+    let piece_colors: Vec<_> =
+        chunks_vec
+            .chunks(chunk_size)
+            .fold(Vec::new(), |mut acc: Vec<TempChunk>, next| {
+                let total = next.len() as u32 * 4;
+                let sum: u32 = next.iter().map(|v| *v as u32).sum();
+                let color = if sum >= total {
+                    colors.complete
+                } else if sum > total / 2 {
+                    colors.incomplete
+                } else if sum > 0 {
+                    colors.started
+                } else {
+                    "bg-grey-800"
+                }
+                .to_string();
+
+                if let Some(last) = acc.last_mut() {
+                    if last.color == color {
+                        last.width += 1;
+                    } else {
+                        acc.push(TempChunk { color, width: 1 });
+                    }
+                } else {
+                    acc.push(TempChunk { color, width: 1 });
+                }
+                acc
+            });
+    // .map(|chunk| {
+    //     let total = chunk.len() as u32 * 4;
+    //     let sum: u32 = chunk.iter().map(|v| *v as u32).sum();
+    //     if sum >= total {
+    //         colors.complete
+    //     } else if sum > total / 2 {
+    //         colors.incomplete
+    //     } else if sum > 0 {
+    //         colors.started
+    //     } else {
+    //         "bg-grey-800"
+    //     }
+    // })
+    // .collect();
     piece_colors
 }
 
@@ -143,8 +174,8 @@ pub(crate) fn ProgressBar<'a>(
                 pieces_color.into_iter().map(|piece| {
                     rsx!(
                         span {
-                            class: "{piece} grow",
-                            style: "flex-grow: 1;",
+                            class: "{piece.color}",
+                            style: "flex-grow: {piece.width};",
                             ""
                         }
                     )})
