@@ -11,6 +11,7 @@ edition = "2021"
 axum = { version = "0.6.18", features = ["query"] }
 base64 = "0.21.0"
 chrono = "0.4.24"
+clap = { version = "4.2.7", features = ["cargo", "derive"] }
 color-eyre = "0.6.2"
 dioxus = "0.3.2"
 dioxus-free-icons = { version = "0.6.0", features = ["ionicons", "feather"] }
@@ -20,11 +21,18 @@ dioxus-router = "0.3.0"
 eyre = "0.6.8"
 http = "0.2.9"
 human_bytes = "0.4.2"
+opentelemetry = { version = "0.17.0", features = ["rt-tokio"] }
+opentelemetry-jaeger = { version = "0.16.0", features = ["rt-tokio"] }
 parking_lot = "0.12.1"
 reqwest = { version = "0.11.17", features = ["serde_json", "json"] }
 rust-embed = { version = "6.6.1", features = ["axum"] }
-serde = "1.0.160"
+serde = { version = "1.0.160", features = ["derive"] }
 serde_json = "1.0.96"
 serde_repr = "0.1.12"
 tokio = { version = "1.28.0", features = ["full"] }
+toml = "0.7.3"
 tower-http = "0.4.0"
+tracing = "0.1.37"
+tracing-opentelemetry = "0.17.0"
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+tracing-tree = "0.2.3"

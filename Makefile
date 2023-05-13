@@ -1,2 +1,2 @@
 dev:
-	cargo watch -w src -w static -x run
+	cargo watch -w src -x run
