@@ -79,47 +79,37 @@ pub fn Home(cx: Scope) -> Element {
         header { class: "fixed top-0 left-0 right-0 h-[40px] bg-beige-800 text-center font-display flex flex-row items-center justify-center text-2xl dark:bg-grey-200",
             "radio-tower"
         }
-        div {
-            class: "fixed top-[40px] left-0 right-0 h-[40px] flex flex-row gap-1 justify-between items-center p-2 bg-beige-900",
+        div { class: "fixed top-[40px] left-0 right-0 h-[40px] flex flex-row gap-1 justify-between items-center p-2 bg-beige-900",
             Icon { width: 16, height: 16, icon: IoFunnelOutline }
             input {
                 class: "",
                 value: "{torrent_filter}",
-                oninput: move |ev| torrent_filter.set(ev.value.clone()),
+                oninput: move |ev| torrent_filter.set(ev.value.clone())
             }
-            button {
-                onclick: move |_| torrent_filter.set("".to_string()),
+            button { onclick: move |_| torrent_filter.set("".to_string()),
                 Icon { width: 16, height: 16, icon: IoCloseOutline }
             }
             button {
-                onclick: move |ev| torrent_order.set(match *(torrent_order.current()) {
-                    Order::Asc => Order::Desc,
-                    Order::Desc => Order::Asc
-                }),
-                class: match *(torrent_order.current()) {
-                    Order::Asc => "rotate-180",
-                    Order::Desc => "rotate-0",
+                onclick: move |ev| {
+                    torrent_order
+                        .set(
+                            match *(torrent_order.current()) {
+                                Order::Asc => Order::Desc,
+                                Order::Desc => Order::Asc,
+                            },
+                        )
                 },
+                class: match *(torrent_order.current()) {
+    Order::Asc => "rotate-180",
+    Order::Desc => "rotate-0",
+},
                 Icon { width: 16, height: 16, icon: IoFilterOutline }
             }
-            select {
-                oninput: move |ev| torrent_sort.set(parse_value(ev.value.clone())),
-                option {
-                    value: "name",
-                    "by name"
-                }
-                option {
-                    value: "progress",
-                    "by progress"
-                }
-                option {
-                    value: "size",
-                    "by size"
-                }
-                option {
-                    value: "status",
-                    "by status"
-                }
+            select { oninput: move |ev| torrent_sort.set(parse_value(ev.value.clone())),
+                option { value: "name", "by name" }
+                option { value: "progress", "by progress" }
+                option { value: "size", "by size" }
+                option { value: "status", "by status" }
             }
         }
         main { class: "flex flex-col gap-2 fixed left-0 right-0 top-[80px] bottom-[44px] bg-beige-900",
