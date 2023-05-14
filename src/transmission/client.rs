@@ -79,7 +79,7 @@ pub struct GetTorrentResponse {
     pub torrents: Vec<Torrent>,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialOrd, PartialEq)]
 #[repr(u8)]
 pub enum TorrentStatus {
     Stopped = 0,

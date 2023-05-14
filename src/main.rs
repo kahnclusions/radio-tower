@@ -99,7 +99,7 @@ async fn main() -> Result<(), Report> {
                   {style}
                   </style>
                 </head>
-                <body class="bg-beige-800 dark:bg-black dark:text-white h-full"> <div id="main" class="h-full"></div> </body>
+                <body class="bg-beige-800 dark:bg-black dark:text-white h-full"> <div id="main"></div> </body>
                 {glue}
                 </html>
                 "#,
