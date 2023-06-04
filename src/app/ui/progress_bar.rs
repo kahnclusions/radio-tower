@@ -35,9 +35,9 @@ fn build_progress_bar_pieces<'a>(
     // whole is started, halfway, or completed. This gives us our final vector indicating the
     // colour for each of the 100 chunks in the progress bar.
 
-    // TODO: this could make the UI slow when a high number of torrents are shown, because each
-    // torrent requires NUM_CHUNKS elements to render the progress bar. Upgrade this algorithm to
-    // merge adjacent pieces and set a flex grow multiplier.
+    // Finally, fold over the list of 100 chunks to merge adjacent chunks of the same type by
+    // setting a `width` field. This `width` value will become the `flex-grow` when we render to
+    // HTML+CSS.
 
     let mut it = pieces.into_iter().peekable();
     let mut chunks: Vec<u8> = Vec::new();
@@ -115,20 +115,6 @@ fn build_progress_bar_pieces<'a>(
                 }
                 acc
             });
-    // .map(|chunk| {
-    //     let total = chunk.len() as u32 * 4;
-    //     let sum: u32 = chunk.iter().map(|v| *v as u32).sum();
-    //     if sum >= total {
-    //         colors.complete
-    //     } else if sum > total / 2 {
-    //         colors.incomplete
-    //     } else if sum > 0 {
-    //         colors.started
-    //     } else {
-    //         "bg-grey-800"
-    //     }
-    // })
-    // .collect();
     piece_colors
 }
 

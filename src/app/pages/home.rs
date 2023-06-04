@@ -114,12 +114,12 @@ pub fn Home(cx: Scope) -> Element {
         }
         main { class: "flex flex-col gap-2 fixed left-0 right-0 top-[80px] bottom-[44px] bg-beige-900",
             torrents.into_iter().map(|torrent| {
-                render! {
-                    MiniTorrent {
-                        torrent: &torrent
+                    render! {
+                        MiniTorrent {
+                            torrent: &torrent
+                        }
                     }
-                }
-            })
+                })
         }
         footer { class: "fixed bottom-0 left-0 right-0 h-[40px] bg-beige-800 dark:bg-grey-200",
             StatsBar {}
